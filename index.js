@@ -22,7 +22,7 @@ exports.generateRequestId = ({ epochSeconds, ipv4Array }) => {
         console.log('encode ivlenth: ', iv.length);
 
         stream.pipe(concat(function(buf) {
-            return resolve(symmetricallyEncryptBuffer(Buffer.concat([buf])).toString('base64'));
+            return resolve(symmetricallyEncryptBuffer(Buffer.concat([iv,buf]), iv).toString('base64'));
         }));
 
         RequestId.encode(stream, {
@@ -35,28 +35,31 @@ exports.generateRequestId = ({ epochSeconds, ipv4Array }) => {
     });
 };
 
-const symmetricallyEncryptBuffer = exports.symmetricallyEncryptBuffer = (buffer) => {
-    console.log('encrypt incoming: ', buffer);
-    const cipher = crypto.createCipher('aes256', key);
+const symmetricallyEncryptBuffer = exports.symmetricallyEncryptBuffer = (buffer, iv) => {
+    console.log('encrypt incoming: ', buffer, iv);
+    const cipher = crypto.createCipher('aes256', key, iv);
     return Buffer.concat([cipher.update(buffer), cipher.final()]);
     
 };
 
-const symmetricDecrypt = exports.symmetricDecrypt = (buffer) => {
-    const decipher = crypto.createDecipher('aes256', key);
-    console.log('decrypting buffer: ', buffer);
+const symmetricallyDecryptBuffer = exports.symmetricallyDecryptBuffer = (buffer, iv) => {
+    console.log('decrypting buffer: ', buffer, iv);
+    const decipher = crypto.createDecipher('aes256', key, iv);
     return Buffer.concat([decipher.update(buffer), decipher.final()]);
 };
 
 exports.decodeRequestId = (requestId) => {
     console.log('reqid: ', requestId);
+    const buffer = Buffer.from(requestId, 'base64');
+    console.log('reqid-buffer: ', buffer);
+    
+    const iv = buffer.slice(0, ivKeySize);
+    console.log('decode ivlenth: ', iv.length);
+    const rest = buffer.slice(ivKeySize);
+    console.log('rest: ', rest);
 
-    // const iv = requestId.slice(0, ivKeySize);
-    // console.log('decode ivlenth: ', iv.length);
-    // const rest = requestId.slice(ivKeySize);
-
-    // const deciphered = symmetricDecrypt(rest, iv);
-    const deciphered = symmetricDecrypt(Buffer.from(requestId, 'base64'));
+    const deciphered = symmetricallyDecryptBuffer(Buffer.from(rest, 'base64'), iv);
+    // const deciphered = symmetricallyDecryptBuffer(Buffer.from(requestId, 'base64'));
     const stream = new r.DecodeStream(new Buffer(deciphered));
     return RequestId.decode(stream);
 };

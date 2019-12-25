@@ -1,12 +1,20 @@
-const { generateRequestId, decodeRequestId, symmetricallyEncryptBuffer, symmetricDecrypt } = require('./');
+const { generateRequestId, decodeRequestId, symmetricallyEncryptBuffer, symmetricallyDecryptBuffer } = require('./');
+const crypto = require('crypto');
 
 describe('symmetric encryption', () => {
+    const iv = crypto.randomBytes(32);
     it('should actually be symmetric w/ strings', () => {
-        expect(symmetricDecrypt(symmetricallyEncryptBuffer(Buffer.from('test')))).toEqual(Buffer.from('test'));
+        expect(symmetricallyDecryptBuffer(
+            symmetricallyEncryptBuffer(Buffer.from('test', 'utf8'), iv),
+            iv
+        )).toEqual(Buffer.from('test', 'utf8'));
     });
 
     it('should actually be symmetric w/ buffers', () => {
-        expect(symmetricDecrypt(symmetricallyEncryptBuffer(new Buffer([255])))).toEqual(new Buffer([255]));
+        expect(symmetricallyDecryptBuffer(
+            symmetricallyEncryptBuffer(new Buffer([255]), iv),
+            iv
+        )).toEqual(new Buffer([255]));
     });
 });
 
