@@ -4,12 +4,15 @@
   "description": "generates and decrypts opaque, versioned request ids",
   "main": "index.js",
   "scripts": {
+    "benchmark": "node benchmark.js",
     "test": "jest"
   },
   "author": "Justin Abrahms",
   "license": "AGPL",
   "devDependencies": {
-    "jest": "^24.9.0"
+    "benchmark": "^2.1.4",
+    "jest": "^24.9.0",
+    "microtime": "^3.0.0"
   },
   "dependencies": {
     "concat-stream": "^2.0.0",
