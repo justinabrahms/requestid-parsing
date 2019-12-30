@@ -16,7 +16,7 @@ const factory = exports.factory = (struct, key) => {
 const generateRequestId = exports.generateRequestId = (struct, encryptionKey, payload) => {
     return new Promise((resolve, reject) => {
         const stream = new r.EncodeStream;
-        const iv = new Buffer(crypto.randomBytes(ivKeySize));
+        const iv = Buffer.from(crypto.randomBytes(ivKeySize));
 
         stream.pipe(concat(function(buf) {
             return resolve(Buffer.concat([iv,symmetricallyEncryptBuffer(buf, encryptionKey, iv)]).toString('base64'));
@@ -49,6 +49,6 @@ const decodeRequestId = exports.decodeRequestId = (struct, encryptionKey, reques
     const rest = buffer.slice(ivKeySize);
     
     const deciphered = symmetricallyDecryptBuffer(Buffer.from(rest, 'base64'), encryptionKey, iv);
-    const stream = new r.DecodeStream(new Buffer(deciphered));
+    const stream = new r.DecodeStream(Buffer.from(deciphered));
     return struct.decode(stream);
 };
