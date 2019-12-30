@@ -27,3 +27,19 @@ It's currently so large due to using initialization vectors (aka
 nonces). This adds additional 16 bytes to our key, which does bloat
 the generated request id by over 100% for the RequestId type shown
 above (~12 bytes to 12+16= 28 bytes).
+
+
+## How fast is it?
+
+Feel free to run `npm run benchmark` to test it for yourself. On my
+tiny laptop, I get this:
+
+```
+$ npm run benchmark
+
+> requestid-parsing@1.0.0 benchmark /home/justin/src/justin.abrah.ms/node-requestid-parsing
+> node benchmark.js
+
+generating request ids x 25,127 ops/sec ±19.03% (58 runs sampled)
+decoding request ids x 89,992 ops/sec ±2.02% (88 runs sampled)
+```
