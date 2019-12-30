@@ -30,8 +30,6 @@ const generateRequestId = exports.generateRequestId = (struct, encryptionKey, pa
 
 const symmetricallyEncryptBuffer = exports.symmetricallyEncryptBuffer = (buffer, encryptionKey, iv) => {
     encryptionKey = encryptionKey.padEnd(keySize, '=').slice(0, keySize);
-    console.log('iv: ', iv);
-    console.log('ivsize:', iv.length);
     const cipher = crypto.createCipheriv(encryptionScheme, encryptionKey, iv);
     return Buffer.concat([cipher.update(buffer), cipher.final()]);
 };

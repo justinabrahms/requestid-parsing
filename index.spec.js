@@ -23,7 +23,6 @@ describe('symmetric encryption', () => {
     });
 
     it('should actually be symmetric w/ buffers', () => {
-        console.log('iv: ', iv);
         expect(symmetricallyDecryptBuffer(
             symmetricallyEncryptBuffer(new Buffer([255]), encryptionKey, iv),
             encryptionKey, 
@@ -43,15 +42,12 @@ describe('request ids', () => {
 
     it('should be opaque when generated', async () => {
         const reqId = await generateRequestId(RequestId, encryptionKey, obj);
-        console.log(reqId);
         expect(reqId).toMatch(/^[a-zA-Z0-9/=+]+$/);
     });
 
     it('should not be identical if called with identical data', async () => {
         const reqId1 = await generateRequestId(RequestId, encryptionKey, obj);
         const reqId2 = await generateRequestId(RequestId, encryptionKey, obj);
-        console.log('req1: ', reqId1);
-        console.log('req2: ', reqId2);
         expect(reqId1).not.toEqual(reqId2);
     });
 
