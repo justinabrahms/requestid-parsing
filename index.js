@@ -4,6 +4,7 @@ const concat = require('concat-stream');
 
 const encryptionScheme = 'aes256';
 const ivKeySize = 16;
+const keySize = 32;
 
 const factory = exports.factory = (struct, key) => {
     return {
@@ -28,7 +29,7 @@ const generateRequestId = exports.generateRequestId = (struct, encryptionKey, pa
 };
 
 const symmetricallyEncryptBuffer = exports.symmetricallyEncryptBuffer = (buffer, encryptionKey, iv) => {
-    encryptionKey = encryptionKey.padEnd(ivKeySize, '=').slice(0, ivKeySize);
+    encryptionKey = encryptionKey.padEnd(keySize, '=').slice(0, keySize);
     console.log('iv: ', iv);
     console.log('ivsize:', iv.length);
     const cipher = crypto.createCipheriv(encryptionScheme, encryptionKey, iv);
@@ -36,7 +37,7 @@ const symmetricallyEncryptBuffer = exports.symmetricallyEncryptBuffer = (buffer,
 };
 
 const symmetricallyDecryptBuffer = exports.symmetricallyDecryptBuffer = (buffer, encryptionKey, iv) => {
-    encryptionKey = encryptionKey.padEnd(ivKeySize, '=').slice(0, ivKeySize);
+    encryptionKey = encryptionKey.padEnd(keySize, '=').slice(0, keySize);
     const decipher = crypto.createDecipheriv(encryptionScheme, encryptionKey, iv);
     return Buffer.concat([decipher.update(buffer), decipher.final()]);
 };
@@ -46,9 +47,8 @@ const decodeRequestId = exports.decodeRequestId = (struct, encryptionKey, reques
     
     const iv = buffer.slice(0, ivKeySize);
     const rest = buffer.slice(ivKeySize);
-    // const rest = buffer;
     
-    const deciphered = symmetricallyDecryptBuffer(Buffer.from(rest, 'base64'), encryptionKey);
+    const deciphered = symmetricallyDecryptBuffer(Buffer.from(rest, 'base64'), encryptionKey, iv);
     const stream = new r.DecodeStream(new Buffer(deciphered));
     return struct.decode(stream);
 };

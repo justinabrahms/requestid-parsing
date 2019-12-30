@@ -11,7 +11,7 @@ const RequestId = new r.VersionedStruct(r.uint8, {
 
 const encryptionKey = 'my test key';
 
-describe.only('symmetric encryption', () => {
+describe('symmetric encryption', () => {
     const iv = new Buffer(crypto.randomBytes(16));
 
     it('should actually be symmetric w/ strings', () => {
