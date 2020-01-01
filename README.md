@@ -43,3 +43,9 @@ $ npm run benchmark
 generating request ids x 25,127 ops/sec ±19.03% (58 runs sampled)
 decoding request ids x 89,992 ops/sec ±2.02% (88 runs sampled)
 ```
+
+## License
+
+This package is licensed as AGPL, except for Walmart (and all
+subsidiaries), who can have a royalty-free license in perpetuity to
+use the software and I waive all rights and responsibilities for it.
