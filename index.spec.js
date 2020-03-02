@@ -12,22 +12,22 @@ const RequestId = new r.VersionedStruct(r.uint8, {
 const encryptionKey = 'my test key';
 
 describe('symmetric encryption', () => {
-    const iv = new Buffer(crypto.randomBytes(16));
+    const iv = Buffer.from(crypto.randomBytes(16));
 
     it('should actually be symmetric w/ strings', () => {
         expect(symmetricallyDecryptBuffer(
-            symmetricallyEncryptBuffer(Buffer.from('test', 'utf8'), encryptionKey, iv),
-            encryptionKey, 
-            iv
+            encryptionKey,
+            iv,
+            symmetricallyEncryptBuffer(encryptionKey, iv, Buffer.from('test', 'utf8')),
         )).toEqual(Buffer.from('test', 'utf8'));
     });
 
     it('should actually be symmetric w/ buffers', () => {
         expect(symmetricallyDecryptBuffer(
-            symmetricallyEncryptBuffer(new Buffer([255]), encryptionKey, iv),
-            encryptionKey, 
-            iv
-        )).toEqual(new Buffer([255]));
+            encryptionKey,
+            iv,
+            symmetricallyEncryptBuffer(encryptionKey, iv, Buffer.from([255])),
+        )).toEqual(Buffer.from([255]));
     });
 });
 
