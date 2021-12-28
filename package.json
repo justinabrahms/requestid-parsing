@@ -11,7 +11,7 @@
   "license": "AGPL",
   "devDependencies": {
     "benchmark": "^2.1.4",
-    "jest": "^25.1.0",
+    "jest": "^27.4.5",
     "microtime": "^3.0.0"
   },
   "dependencies": {
